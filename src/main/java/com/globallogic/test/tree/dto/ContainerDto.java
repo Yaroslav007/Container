@@ -17,7 +17,6 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @AllArgsConstructor
 public class ContainerDto {
-
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @NotBlank
     private int id;
