@@ -104,7 +104,7 @@ public class ContainerController {
      * @return the list of {@link ContainerDto} items
      */
     @GetMapping("/findAll")
-    public ResponseEntity<List<ContainerDto>> findAll() throws EntityNotFoundException {
+    public ResponseEntity<List<ContainerDto>> findAll() {
         return new ResponseEntity(containerService.findAll(), HttpStatus.OK);
     }
 }
