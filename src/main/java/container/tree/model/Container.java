@@ -1,4 +1,4 @@
-package com.globallogic.test.tree.model;
+package container.tree.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
- * Represents a URL shortener instance.
+ * Represents a container instance like nesting dolls.
  *
  * @author yaroslav.shymkiv
  */
@@ -35,10 +35,21 @@ public class Container {
     public Container() {
     }
 
+    /**
+     * Adds sub-container to the main container item.
+     *
+     * @param container the sub-container item
+     */
     public void addSubContainer(Container container) {
         subContainers.add(container);
     }
 
+
+    /**
+     * Removes sub-container from the main container item.
+     *
+     * @param container the sub-container item
+     */
     public void removeSubContainer(Container container) {
         subContainers.remove(container);
     }

@@ -1,4 +1,4 @@
-package com.globallogic.test.tree.exc;
+package container.tree.exc;
 
 /**
  * Exceptions which will be thrown when entity was not found.

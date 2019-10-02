@@ -1,6 +1,6 @@
-package com.globallogic.test.tree.dao;
+package container.tree.dao;
 
-import com.globallogic.test.tree.model.Container;
+import container.tree.model.Container;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

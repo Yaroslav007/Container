@@ -1,9 +1,10 @@
-package com.globallogic.test.tree.service;
+package container.tree.service;
 
-import com.globallogic.test.tree.dao.ContainerRepository;
-import com.globallogic.test.tree.dto.ContainerDto;
-import com.globallogic.test.tree.exc.EntityNotFoundException;
-import com.globallogic.test.tree.model.Container;
+import container.tree.dao.ContainerRepository;
+import container.tree.dto.ContainerDtoRequest;
+import container.tree.dto.ContainerDtoResponse;
+import container.tree.exc.EntityNotFoundException;
+import container.tree.model.Container;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Business logic for
+ * Service logic for {@link Container} class.
  *
  * @author yaroslav.shymkiv
  */
@@ -24,11 +25,11 @@ public class ContainerService {
     private ContainerRepository containerRepository;
 
     /**
-     * Saves new {@link Container} com.globallogic.test.tree item into DB.
+     * Saves new root {@link Container} instance into DB.
      *
      * @param urlDto data with container value
      */
-    public void createNewContainerTree(ContainerDto urlDto) {
+    public void createNewContainerTree(ContainerDtoRequest urlDto) {
         containerRepository.save(new Container(urlDto.getValue()));
     }
 
@@ -38,7 +39,7 @@ public class ContainerService {
      * @param parentId identifier of the parent container
      * @param containerDto data with container value
      */
-    public void createSubContainer(int parentId, ContainerDto containerDto) throws EntityNotFoundException {
+    public void createSubContainer(int parentId, ContainerDtoRequest containerDto) throws EntityNotFoundException {
         Optional<Container> optionalContainer = containerRepository.findAllById(parentId);
         if (!optionalContainer.isPresent()){
             throw new EntityNotFoundException(parentId);
@@ -74,7 +75,7 @@ public class ContainerService {
      * @param id container identifier
      * @param containerDto new container data
      */
-    public void update(int id, ContainerDto containerDto) throws EntityNotFoundException {
+    public void update(int id, ContainerDtoRequest containerDto) throws EntityNotFoundException {
         Container container = getContainerItem(id);
         container.setValue(containerDto.getValue());
         containerRepository.save(container);
@@ -87,7 +88,7 @@ public class ContainerService {
      * @return list of sub-containers
      * @throws EntityNotFoundException will be thrown if {@link Container} was not found
      */
-    public List<ContainerDto> getAllSubContainers(int id) throws EntityNotFoundException {
+    public List<ContainerDtoResponse> getAllSubContainers(int id) throws EntityNotFoundException {
         return getContainerItem(id).getSubContainers().stream().map(this::toContainerDto).collect(Collectors.toList());
     }
 
@@ -95,12 +96,30 @@ public class ContainerService {
      * Returns {@link Container} item.
      *
      * @param id container identifier
-     * @return the {@link ContainerDto} instance
+     * @return the {@link ContainerDtoResponse} instance
      * @throws EntityNotFoundException will be thrown if {@link Container} was not found
      */
-    public ContainerDto getContainer(int id) throws EntityNotFoundException {
+    public ContainerDtoResponse getContainer(int id) throws EntityNotFoundException {
         return toContainerDto(getContainerItem(id));
     }
+
+    /**
+     * Method to find all containers.
+     */
+    public List<ContainerDtoResponse> findAll() {
+        return containerRepository.findAll().stream().map(this::toContainerDto).collect(Collectors.toList());
+    }
+
+    /**
+     * Removes the main container instance.
+     *
+     * @param id the container identifier
+     * @throws EntityNotFoundException will be thrown if {@link Container} was not found
+     */
+    public void removeMainContainer(int id) throws EntityNotFoundException {
+        containerRepository.delete(getContainerItem(id));
+    }
+
 
     private Container getContainerItem(int id) throws EntityNotFoundException {
         Optional<Container> optionalShortUrl = containerRepository.findById(id);
@@ -110,11 +129,7 @@ public class ContainerService {
         return optionalShortUrl.get();
     }
 
-    private ContainerDto toContainerDto(Container container) {
-        return new ContainerDto(container.getId(), container.getValue());
-    }
-
-    public List<ContainerDto> findAll() {
-        return containerRepository.findAll().stream().map(this::toContainerDto).collect(Collectors.toList());
+    private ContainerDtoResponse toContainerDto(Container container) {
+        return new ContainerDtoResponse (container.getValue(), container.getId());
     }
 }
